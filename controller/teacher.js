@@ -1,5 +1,7 @@
 const allTeachers = require("../data/teacher");
 
+const Teacher = require("../models/teacher");
+
 // all teachers aget controller
 const getAllTeachers = (req, res) => {
   res.send(allTeachers);
@@ -25,9 +27,16 @@ const renameSingleTeacherById = (req, res) => {
   }
 };
 
+const createTeacher = async (req, res) => {
+  const teacher = new Teacher(req.body);
+  const data = await teacher.save();
+  return res.status(201).send(data);
+};
+
 // exports controller
 module.exports = {
   getSingleTeacherById,
   getAllTeachers,
   renameSingleTeacherById,
+  createTeacher
 };

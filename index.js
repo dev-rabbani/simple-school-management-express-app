@@ -1,5 +1,12 @@
 const express = require("express");
 const app = express();
+require("dotenv").config();
+
+const mongoose = require("mongoose");
+
+const bodyParser = require('body-parser');
+
+app.use(bodyParser.json());
 
 //import student routes
 const studentRoutes = require("./routes/student");
@@ -21,5 +28,11 @@ app.get("*", (req, res) => {
   res.send("<h2>No Data found with this API<h2/>");
 });
 
+mongoose
+  .connect("mongodb://localhost/school")
+  .then(() => console.log("Database connected successfully"))
+  .catch((err) => console.log(err));
+
 // listening port
-app.listen(3000);
+const PORT = process.env.PORT || 5000;
+app.listen(PORT, () => console.log(`Server is running on port ${PORT}`));

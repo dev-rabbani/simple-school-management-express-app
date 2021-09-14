@@ -1,4 +1,7 @@
+const studentModel = require("../models/student");
 const allStudents = require("../data/student");
+
+const Student = require('../models/student');
 
 // all student get controller
 const getAllStudents = (req, res) => {
@@ -30,9 +33,16 @@ const renameSingleStudentById = (req, res) => {
   }
 };
 
+const createStudent = async (req, res) => {
+  const student = new Student(req.body);
+  const data = await student.save();
+  return res.status(201).send(data);
+};
+
 // Exports controller
 module.exports = {
   getSingleStudentById,
   getAllStudents,
   renameSingleStudentById,
+  createStudent,
 };
