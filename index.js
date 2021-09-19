@@ -4,9 +4,9 @@ require("dotenv").config();
 
 const mongoose = require("mongoose");
 
-const bodyParser = require('body-parser');
+const bodyParser = require('body-parser')
 
-app.use(bodyParser.json());
+app.use(bodyParser.json())
 
 //import student routes
 const studentRoutes = require("./routes/student");

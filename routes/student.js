@@ -1,18 +1,24 @@
 const express = require("express");
 const router = express.Router();
 
+// import all student controller
 const {
   getAllStudents,
   getSingleStudentById,
   renameSingleStudentById,
-  createStudent
+  registerStudent
 } = require("../controller/student");
 
+// get all student routes
 router.get("/students", getAllStudents);
 
+// get student by id routes
 router.get("/students/:id", getSingleStudentById);
-router.get("/students/:id/:name/", renameSingleStudentById);
 
-router.post("/student/create", createStudent)
+// update student by id rouets
+router.put("/students/rename/:id/:name", renameSingleStudentById);
+
+// register student rotues
+router.post("/student/register", registerStudent)
 
 module.exports = router;
