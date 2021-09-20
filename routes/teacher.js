@@ -7,6 +7,8 @@ const {
   getAllTeachers,
   renameSingleTeacherById,
   registerTeacher,
+  logIn,
+  teacherDelete,
 } = require("../controller/teacher");
 
 // get all teachers controller
@@ -16,9 +18,15 @@ router.get("/teachers", getAllTeachers);
 router.get("/teachers/:id", getSingleTeacherById);
 
 // update teacher controller
-router.put("/teachers/:id/:name/", renameSingleTeacherById);
+router.put("/teachers/rename/:id/:name/", renameSingleTeacherById);
 
-// create teacher controller
-router.post("/teacher/create", registerTeacher);
+//  teacher register controller
+router.post("/teacher/register", registerTeacher);
+
+//  teacher  login controller
+router.post("/teacher/login", logIn);
+
+//  teacher  delete controller
+router.delete("/teacher/delete/:id", teacherDelete);
 
 module.exports = router;

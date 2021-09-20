@@ -1,0 +1,52 @@
+[
+  {
+    "firstName": "Golam",
+    "lastName": "Rabbani",
+    "mobile": "01730616020",
+    "email": "rabbani@gmail.com",
+    "pass": "1234",
+    "age": "25",
+    "height": "5.6",
+    "subject": "bangla"
+  },
+  {
+    "firstName": "Abdur",
+    "lastName": "Rahim",
+    "mobile": "01700000000",
+    "email": "rahim@gmail.com",
+    "pass": "1212",
+    "age": "30",
+    "height": "5.4",
+    "subject": "english"
+  },
+  {
+    "firstName": "Abdul",
+    "lastName": "Karim",
+    "mobile": "0156565656565",
+    "email": "karim@gmail.com",
+    "pass": "5678",
+    "age": "20",
+    "height": "5.3",
+    "subject": "math"
+  },
+  {
+    "firstName": "Shahin",
+    "lastName": "Ahmed",
+    "mobile": "01678956977",
+    "email": "sagor@gmail.com",
+    "pass": "1234",
+    "age": "22",
+    "height": "5.5",
+    "subject": "computer"
+  },
+  {
+    "firstName": "Jakir",
+    "lastName": "Hossain",
+    "mobile": "01756565654",
+    "email": "jakir@gmail.com",
+    "pass": "1234",
+    "age": "24",
+    "height": "5.2",
+    "subject": "gk"
+  }
+]

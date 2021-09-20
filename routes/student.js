@@ -6,7 +6,10 @@ const {
   getAllStudents,
   getSingleStudentById,
   renameSingleStudentById,
-  registerStudent
+  registerStudent,
+  logIn,
+  studentDelete,
+  infoUpdateController
 } = require("../controller/student");
 
 // get all student routes
@@ -18,7 +21,16 @@ router.get("/students/:id", getSingleStudentById);
 // update student by id rouets
 router.put("/students/rename/:id/:name", renameSingleStudentById);
 
-// register student rotues
-router.post("/student/register", registerStudent)
+// student register rotues
+router.post("/student/register", registerStudent);
+
+// student login rotues
+router.post("/student/login", logIn);
+
+// student delete rotues
+router.delete("/student/delete/:id", studentDelete);
+
+// student delete rotues
+router.put("/student/update/:id", infoUpdateController);
 
 module.exports = router;

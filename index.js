@@ -4,20 +4,17 @@ require("dotenv").config();
 
 const mongoose = require("mongoose");
 
-const bodyParser = require('body-parser')
+const bcrypt = require("bcrypt")
 
-app.use(bodyParser.json())
+// use express json default method
+app.use(express.json());
 
-//import student routes
+//import and use student routes
 const studentRoutes = require("./routes/student");
-
-//import teacher routes
-const teacherRoutes = require("./routes/teacher");
-
-// students
 app.use(studentRoutes);
 
-// teachers
+//import and use teacher routes
+const teacherRoutes = require("./routes/teacher");
 app.use(teacherRoutes);
 
 // defaults route and controller
@@ -28,6 +25,7 @@ app.get("*", (req, res) => {
   res.send("<h2>No Data found with this API<h2/>");
 });
 
+// conntect mongoose with database
 mongoose
   .connect("mongodb://localhost/school")
   .then(() => console.log("Database connected successfully"))

@@ -1,5 +1,6 @@
-
 const Teacher = require("../models/teacher");
+
+const bcrypt = require("bcrypt");
 
 // all teachers aget controller
 const getAllTeachers = async (req, res) => {
@@ -66,9 +67,7 @@ const renameSingleTeacherById = async (req, res) => {
 // teacher register controller
 const registerTeacher = async (req, res) => {
   try {
-    const teacher = new Teacher(req.body);
-
-    const { email } = teacher;
+    const { email, pass } = req.body;
     const filterTeacher = await Teacher.findOne({ email });
 
     if (filterTeacher) {
@@ -76,10 +75,64 @@ const registerTeacher = async (req, res) => {
         msg: "Teacher already exist with this email",
       });
     } else {
+      const hassPass = await bcrypt.hash(pass, 10);
+      req.body.pass = hassPass;
+      const teacher = await new Teacher(req.body)
       const data = await teacher.save();
       res.json({
         msg: "Teahcher register successfully",
         data,
+      });
+    }
+  } catch (error) {
+    res.json({
+      error,
+    });
+  }
+};
+
+// teacher login controller
+const logIn = async (req, res) => {
+  try {
+    const { email, pass } = req.body;
+    const validTeacher = await Teacher.findOne({ email });
+
+    if (validTeacher) {
+      const isValid = await bcrypt.compare(pass, validTeacher.pass)
+      if (isValid) {
+        res.json({
+          msg: "Teacher login successfully",
+          validTeacher,
+        });
+      } else {
+        res.json({
+          msg: "Password does't match",
+        });
+      }
+    } else {
+      res.json({
+        msg: "Teacher not found",
+      });
+    }
+  } catch (error) {
+    res.json({
+      error,
+    });
+  }
+};
+
+// teacher delete controller
+const teacherDelete = async (req, res) => {
+  try {
+    const { id } = req.params;
+    if (id) {
+      const deleteData = await Teacher.findOneAndDelete({ _id: id });
+      res.json({
+        msg: "Teacher deleted successfully",
+      });
+    } else {
+      res.json({
+        msg: "please provide valid data",
       });
     }
   } catch (error) {
@@ -95,4 +148,6 @@ module.exports = {
   getAllTeachers,
   renameSingleTeacherById,
   registerTeacher,
+  logIn,
+  teacherDelete,
 };

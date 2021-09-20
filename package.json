@@ -1,5 +1,5 @@
 {
-  "name": "class9",
+  "name": "simple-school-management-express-app",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
@@ -11,7 +11,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "body-parser": "^1.19.0",
+    "bcrypt": "^5.0.1",
     "dotenv": "^10.0.0",
     "express": "^4.17.1",
     "mongoose": "^6.0.5"
