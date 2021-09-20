@@ -77,7 +77,7 @@ const registerTeacher = async (req, res) => {
     } else {
       const hassPass = await bcrypt.hash(pass, 10);
       req.body.pass = hassPass;
-      const teacher = await new Teacher(req.body)
+      const teacher = await new Teacher(req.body);
       const data = await teacher.save();
       res.json({
         msg: "Teahcher register successfully",
@@ -98,7 +98,7 @@ const logIn = async (req, res) => {
     const validTeacher = await Teacher.findOne({ email });
 
     if (validTeacher) {
-      const isValid = await bcrypt.compare(pass, validTeacher.pass)
+      const isValid = await bcrypt.compare(pass, validTeacher.pass);
       if (isValid) {
         res.json({
           msg: "Teacher login successfully",
@@ -142,6 +142,31 @@ const teacherDelete = async (req, res) => {
   }
 };
 
+// teacher info update controller
+
+const infoUpdateController = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { pass } = req.body;
+    const hashPass = await bcrypt.hash(pass, 10);
+    req.body.pass = hashPass;
+
+    await Teacher.findOneAndUpdate(
+      { _id: id },
+      { $set: req.body },
+      {
+        multi: true,
+      }
+    );
+    res.json({
+      msg: "Teacher data updated successfully",
+      data: req.body,
+    });
+  } catch (error) {
+    error;
+  }
+};
+
 // exports controller
 module.exports = {
   getSingleTeacherById,
@@ -150,4 +175,5 @@ module.exports = {
   registerTeacher,
   logIn,
   teacherDelete,
+  infoUpdateController,
 };

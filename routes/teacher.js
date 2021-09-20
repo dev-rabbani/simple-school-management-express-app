@@ -9,6 +9,7 @@ const {
   registerTeacher,
   logIn,
   teacherDelete,
+  infoUpdateController
 } = require("../controller/teacher");
 
 // get all teachers controller
@@ -28,5 +29,8 @@ router.post("/teacher/login", logIn);
 
 //  teacher  delete controller
 router.delete("/teacher/delete/:id", teacherDelete);
+
+// teacher update controller
+router.put('/teacher/update/:id', infoUpdateController)
 
 module.exports = router;

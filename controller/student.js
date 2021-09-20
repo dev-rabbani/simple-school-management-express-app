@@ -149,9 +149,15 @@ const studentDelete = async (req, res) => {
   }
 };
 
+// infoUpdateController
+
 const infoUpdateController = async (req, res) => {
   try {
     const { id } = req.params;
+    const { pass } = req.body;
+    const hashPass = await bcrypt.hash(pass, 10);
+    req.body.pass = hashPass;
+
     await Student.findOneAndUpdate(
       { _id: id },
       {
@@ -170,6 +176,37 @@ const infoUpdateController = async (req, res) => {
   }
 };
 
+// student get by section and class
+const groupBySectionAndClass = async (req, res) => {
+  try {
+    const { section, class: clsName } = req.body;
+    const data = await Student.find({ section, class: clsName });
+    res.json({
+      msg: `student data found with this info  (  ${clsName} and ${section} )`,
+      data,
+    });
+  } catch (error) {
+    error;
+  }
+};
+
+const getStudentByAge = async (req, res) => {
+  try {
+    const data = await Student.find({ "age": { $lt: "20" } });
+    if (data.length) {
+      res.json({
+        msg: "Student get by age range",
+        data,
+      });
+    }
+    res.json({
+      msg: "Student not found",
+    });
+  } catch (error) {
+    error;
+  }
+};
+
 // Exports controller
 module.exports = {
   getSingleStudentById,
@@ -179,4 +216,6 @@ module.exports = {
   logIn,
   studentDelete,
   infoUpdateController,
+  groupBySectionAndClass,
+  getStudentByAge,
 };

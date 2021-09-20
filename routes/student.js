@@ -9,7 +9,9 @@ const {
   registerStudent,
   logIn,
   studentDelete,
-  infoUpdateController
+  infoUpdateController,
+  groupBySectionAndClass,
+  getStudentByAge
 } = require("../controller/student");
 
 // get all student routes
@@ -30,7 +32,13 @@ router.post("/student/login", logIn);
 // student delete rotues
 router.delete("/student/delete/:id", studentDelete);
 
-// student delete rotues
+// student update rotues
 router.put("/student/update/:id", infoUpdateController);
+
+// student search by section and class routes
+router.post('/student/search/', groupBySectionAndClass);
+
+// 
+router.get('/student/search2/',getStudentByAge);
 
 module.exports = router;
