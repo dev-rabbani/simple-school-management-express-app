@@ -1,5 +1,11 @@
 const Student = require("../models/student");
 const bcrypt = require("bcrypt");
+const jwt = require("jsonwebtoken");
+const nodemailer = require("nodemailer");
+
+const secretKey = process.env.SECRET_KEY;
+const hostEmail = process.env.EMAIL;
+const hostEmailPass = process.env.PASS;
 
 // all student get controller
 const getAllStudents = async (req, res) => {
@@ -104,10 +110,17 @@ const logIn = async (req, res) => {
 
     if (validStudent) {
       const isValid = bcrypt.compare(pass, validStudent.pass);
+
       if (isValid) {
+        const data = {
+          email: validStudent.email,
+          class: validStudent.class,
+        };
+        const studentInfoToken = jwt.sign(data, secretKey, { expiresIn: "1h" });
         res.json({
           msg: "Student login successfully",
           validStudent,
+          studentInfoToken,
         });
       } else {
         res.json({
@@ -182,7 +195,7 @@ const groupBySectionAndClass = async (req, res) => {
     const { section, class: clsName } = req.body;
     const data = await Student.find({ section, class: clsName });
     res.json({
-      msg: `student data found with this info  (  ${clsName} and ${section} )`,
+      msg: `Data found for class ${clsName} and section ${section} students`,
       data,
     });
   } catch (error) {
@@ -190,12 +203,16 @@ const groupBySectionAndClass = async (req, res) => {
   }
 };
 
+// get student by age limit
 const getStudentByAge = async (req, res) => {
   try {
-    const data = await Student.find({ "age": { $lt: "20" } });
+    const { age } = req.query;
+    const ageSplit = age.split("-");
+    const [minAge, maxAge] = ageSplit;
+    const data = await Student.find({ age: { $gte: minAge, $lte: maxAge } });
     if (data.length) {
       res.json({
-        msg: "Student get by age range",
+        msg: `Student get in the range of ${minAge} to ${maxAge}`,
         data,
       });
     }
@@ -204,6 +221,127 @@ const getStudentByAge = async (req, res) => {
     });
   } catch (error) {
     error;
+  }
+};
+
+// forgot password controller
+const forgotPassword = async (req, res) => {
+  try {
+    const { email } = req.body;
+    const isValid = await Student.findOne({ email });
+
+    if (!isValid) {
+      res.json({
+        msg: "Student not found",
+      });
+    }
+
+    let otp1 = Math.floor(Math.random() * 8999) + 1000;
+    let otp2 = Math.floor(Math.random() * 89) + 10;
+    let otp = `${otp1}${otp2}`;
+
+    await Student.updateOne({ otp });
+
+    /*------------------- nodemailer setup------------------*/
+
+    // transporter
+    let transporter = nodemailer.createTransport({
+      service: "gmail",
+      auth: {
+        user: hostEmail,
+        pass: hostEmailPass,
+      },
+    });
+
+    // mailOptions
+    let mailOptions = {
+      from: hostEmail,
+      to: email,
+      subject: "OTP send",
+      text: "hello this is test purpose only",
+      html: `
+      <h2>
+        Please check this otp
+        <span style="color:blue;font-size:3rem;letter-spacing:.1rem">${otp}
+        </span>
+      </h2>
+      `,
+    };
+
+    // send mail
+    await transporter.sendMail(mailOptions, function (err, data) {
+      if (err) {
+        return res.json({
+          msg: "OTP Sending failed",
+          err,
+        });
+      }
+      return res.json({
+        msg: `OTP Send successfully with this ${email} email`,
+      });
+    });
+  } catch (error) {
+    res.json({
+      error,
+    });
+  }
+};
+
+// otp check controller
+const checkOtp = async (req, res) => {
+  try {
+    const { otp } = req.body;
+    const isValid = await Student.findOne({ otp });
+    if (!isValid) {
+      return res.json({
+        msg: "OTP does't match",
+      });
+    }
+
+    const data = {
+      email: isValid.email,
+    };
+    const token = jwt.sign(data, secretKey, { expiresIn: "1h" });
+    return res.json({
+      msg: "Otp matched successfully",
+      token,
+    });
+  } catch (error) {
+    res.json({
+      error,
+    });
+  }
+};
+
+// reset password
+
+const resetPassword = async (req, res) => {
+  try {
+    let { newPassword, confirmNewPassword, token } = req.body;
+    if (newPassword !== confirmNewPassword) {
+      return res.json({
+        msg: "Password does't match",
+      });
+    } else {
+      const data = jwt.verify(token, secretKey);
+      let hashedPass = await bcrypt.hash(newPassword, 10);
+      await Student.findOneAndUpdate(
+        { email: data.email },
+        {
+          $set: { pass: hashedPass, otp: "" },
+        },
+        {
+          multi: ture,
+        }
+      );
+      return res.json({
+        msg: "Password reset successfully",
+      });
+    }
+  } catch (error) {
+    res.json({
+      error,
+    });
   }
 };
 
@@ -218,4 +356,7 @@ module.exports = {
   infoUpdateController,
   groupBySectionAndClass,
   getStudentByAge,
+  forgotPassword,
+  checkOtp,
+  resetPassword,
 };

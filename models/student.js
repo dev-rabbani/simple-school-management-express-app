@@ -16,6 +16,7 @@ const studentSchema = new Schema({
   class:String,
   section:String,
   pass: String,
+  otp:''
 });
 
 module.exports = mongoose.model('student', studentSchema);

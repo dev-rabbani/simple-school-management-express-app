@@ -11,7 +11,10 @@ const {
   studentDelete,
   infoUpdateController,
   groupBySectionAndClass,
-  getStudentByAge
+  getStudentByAge,
+  forgotPassword,
+  checkOtp,
+  resetPassword
 } = require("../controller/student");
 
 // get all student routes
@@ -38,7 +41,16 @@ router.put("/student/update/:id", infoUpdateController);
 // student search by section and class routes
 router.post('/student/search/', groupBySectionAndClass);
 
-// 
+// student search by age limit
 router.get('/student/search2/',getStudentByAge);
+
+// forgot password
+router.post('/student/forgot-password', forgotPassword);
+
+// check otp
+router.post('/student/check-otp', checkOtp);
+
+// reset password
+router.post('/student/reset-password', resetPassword);
 
 module.exports = router;
