@@ -323,12 +323,12 @@ const resetPassword = async (req, res) => {
         msg: "Password does't match",
       });
     } else {
-      const data = jwt.verify(token, secretKey);
+      const data = jwt.verify(token, env.process.SECRET_KEY);
       let hashedPass = await bcrypt.hash(newPassword, 10);
       await Student.findOneAndUpdate(
         { email: data.email },
         {
-          $set: { pass: hashedPass, otp: "" },
+          $set: { pass: hashedPass, otp: "" }
         },
         {
           multi: ture,
@@ -339,8 +339,11 @@ const resetPassword = async (req, res) => {
       });
     }
   } catch (error) {
+    let {  token } = req.body;
+    const data = jwt.verify(token, secretKey);
     res.json({
       error,
+      data
     });
   }
 };

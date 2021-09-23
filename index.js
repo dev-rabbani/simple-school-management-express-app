@@ -4,10 +4,14 @@ require("dotenv").config();
 
 const mongoose = require("mongoose");
 
-const bcrypt = require("bcrypt")
+const bcrypt = require("bcrypt");
 
 // use express json default method
 app.use(express.json());
+
+//import and use user routes
+const userRoutes = require("./routes/user");
+app.use("/user", userRoutes);
 
 //import and use student routes
 const studentRoutes = require("./routes/student");
