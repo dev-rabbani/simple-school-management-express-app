@@ -1,10 +1,12 @@
+
+// external imports
 const express = require("express");
+const mongoose = require("mongoose");
+const bcrypt = require("bcrypt");
+
+// constant
 const app = express();
 require("dotenv").config();
-
-const mongoose = require("mongoose");
-
-const bcrypt = require("bcrypt");
 
 // use express json default method
 app.use(express.json());
@@ -20,6 +22,10 @@ app.use(studentRoutes);
 //import and use teacher routes
 const teacherRoutes = require("./routes/teacher");
 app.use(teacherRoutes);
+
+//import and use fileupload routes
+const fileUploadRoutes = require("./routes/uploadRoutes");
+app.use('/upload',fileUploadRoutes);
 
 // defaults route and controller
 app.get("/", (req, res) => {
