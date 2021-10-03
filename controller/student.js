@@ -317,33 +317,36 @@ const checkOtp = async (req, res) => {
 
 const resetPassword = async (req, res) => {
   try {
-    let { newPassword, confirmNewPassword, token } = req.body;
+    let { token } = req.query;
+    let { newPassword, confirmNewPassword } = req.body;
     if (newPassword !== confirmNewPassword) {
       return res.json({
         msg: "Password does't match",
       });
     } else {
-      const data = jwt.verify(token, env.process.SECRET_KEY);
+      const data = jwt.verify(token, secretKey);
       let hashedPass = await bcrypt.hash(newPassword, 10);
       await Student.findOneAndUpdate(
         { email: data.email },
         {
-          $set: { pass: hashedPass, otp: "" }
+          $set: { pass: hashedPass, otp: "" },
         },
         {
-          multi: ture,
+          multi: true,
         }
       );
+      // await Student.findOneAndUpdate(
+      //   { email: data.email },
+      //   { $set: { pass: hashedPass, otp: "" } },
+      //   { multi: true }
+      // );
       return res.json({
         msg: "Password reset successfully",
       });
     }
   } catch (error) {
-    let {  token } = req.body;
-    const data = jwt.verify(token, secretKey);
     res.json({
       error,
-      data
     });
   }
 };
