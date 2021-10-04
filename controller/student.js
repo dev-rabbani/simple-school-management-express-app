@@ -335,11 +335,6 @@ const resetPassword = async (req, res) => {
           multi: true,
         }
       );
-      // await Student.findOneAndUpdate(
-      //   { email: data.email },
-      //   { $set: { pass: hashedPass, otp: "" } },
-      //   { multi: true }
-      // );
       return res.json({
         msg: "Password reset successfully",
       });

@@ -1,9 +1,12 @@
+// external imports
 const express = require("express");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
 const User = require("../models/user");
 
+// internal imports
 const sercetKey = process.env.SECRET_KEY;
+const { userRegisterValidator } = require("../validator/user");
 
 // get all user controller
 const getAllUsers = async (req, res) => {
@@ -28,14 +31,22 @@ const getAllUsers = async (req, res) => {
 // user register controller
 const userRegister = async (req, res) => {
   try {
-    const userData = req.body;
-    const newUser = new User(userData);
-    const user = await newUser.save();
+    const { error, value } = userRegisterValidator.validate(req.body);
 
-    return res.json({
-      msg: "User created suceessfully",
-      user,
-    });
+    if (error) {
+      return res.status(400).json({
+        msg: "Validation error",
+        error: error.details[0].message,
+      });
+    } else {
+      const userData = req.body;
+      const newUser = new User(userData);
+      const user = await newUser.save();
+      return res.json({
+        msg: "User created suceessfully",
+        user,
+      });
+    }
   } catch (error) {
     return res.json({
       error,
