@@ -1,10 +1,13 @@
+// internal imports
+const fs = require("fs");
 
-const singleFileUplaoder = async(req, res) => {
+// single file uploader
+const singleFileUplaoder = async (req, res) => {
   try {
     if (req.file) {
       res.json({
         msg: "File uploaded successfully",
-        fileDeatils:req.file,
+        fileDeatils: req.file,
       });
     } else {
       res.json({
@@ -18,6 +21,7 @@ const singleFileUplaoder = async(req, res) => {
   }
 };
 
+// multiple file uploader
 const multipleUploader = (req, res) => {
   try {
     if (req.files) {
@@ -37,8 +41,34 @@ const multipleUploader = (req, res) => {
   }
 };
 
+// base64toimage
+
+const base64ToImageUpload = async (req, res) => {
+  try {
+    const path =
+      "./images/" +
+      Date.now() +
+      "-" +
+      Math.round(Math.random() * 8999 + 1000) +
+      ".png";
+
+    const imgData = req.body.base64Image;
+    const base64Data = imgData.replace(/^data:([A-Za-z-+/]+);base64,/, "");
+    fs.writeFileSync(path, base64Data, { encoding: "base64" });
+
+    return res.json({
+      msg: "Base64 to image upload successfully",
+      path,
+    });
+  } catch (error) {
+    return res.json({
+      error,
+    });
+  }
+};
 
 module.exports = {
-    singleFileUplaoder,
-    multipleUploader
-}
+  singleFileUplaoder,
+  multipleUploader,
+  base64ToImageUpload,
+};
