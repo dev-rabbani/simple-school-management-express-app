@@ -1,4 +1,3 @@
-
 // external imports
 const express = require("express");
 const mongoose = require("mongoose");
@@ -9,7 +8,16 @@ const app = express();
 require("dotenv").config();
 
 // use express json default method
-app.use(express.json());
+app.use(express.json({ limit: "1mb" }));
+
+app.use(express.urlencoded({ limit: "1mb" }));
+
+// folder static
+app.use(express.static("images"));
+
+//import and use post routes
+const postRoutes = require("./routes/post");
+app.use("/post", postRoutes);
 
 //import and use user routes
 const userRoutes = require("./routes/user");
@@ -25,7 +33,7 @@ app.use(teacherRoutes);
 
 //import and use fileupload routes
 const fileUploadRoutes = require("./routes/uploadRoutes");
-app.use('/upload',fileUploadRoutes);
+app.use("/upload", fileUploadRoutes);
 
 // defaults route and controller
 app.get("/", (req, res) => {
