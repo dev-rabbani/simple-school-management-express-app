@@ -1,9 +1,12 @@
+// External Imports
 const mongoose = require("mongoose");
 const { Schema } = mongoose;
 
+// commentSchema
 const commentSchema = new Schema({
-  commentBy: Schema.Types.ObjectId,
   commetBody: String,
 });
 
+
+// Exports
 module.exports = mongoose.model("Comment", commentSchema);
